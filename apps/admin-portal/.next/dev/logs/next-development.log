@@ -1,0 +1,6 @@
+[00:00:05.723] Server  WARN    ⚠ "Found lockfile missing swc dependencies," "patching..."
+[00:00:21.773] Server  ERROR   ⨯ Failed to patch lockfile, please try uninstalling and reinstalling next in this workspace
+[00:00:21.838] Server  ERROR   Error: Failed to get registry from "yarn".
+[00:00:24.937] Server  LOG     ✓ Ready in 22.5s
+[00:02:30.587] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:37.821] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
