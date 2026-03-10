@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/AtulShivnani/Desktop/vc/apps/admin-portal/src/app/globals.css"],"sourcesContent":["* {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n}\n\nbody {\n  font-family: \"Space Grotesk\", system-ui, sans-serif;\n  background: #f6f1ea;\n  color: #1c1a18;\n}\n\n.shell {\n  max-width: 1024px;\n  margin: 0 auto;\n  padding: 48px 24px;\n}\n\n.card {\n  margin-top: 24px;\n  padding: 24px;\n  border-radius: 20px;\n  background: #ffffff;\n  border: 1px solid rgba(28, 26, 24, 0.12);\n}\n"],"names":[],"mappings":"AAAA;;;;;;AAMA;;;;;;AAMA;;;;;;AAMA"}}]
-}
