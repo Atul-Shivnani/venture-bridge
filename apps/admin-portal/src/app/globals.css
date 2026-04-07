@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink:       #1c1a18;
+  --color-ink-soft:  #4c4566;
+  --color-accent:    #7c3aed;
+  --color-accent-2:  #4f46e5;
+  --color-card:      #ffffff;
+  --color-border:    rgba(60, 40, 120, 0.12);
+  --color-bg:        #f5f3ff;
+  --font-sans: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left,  rgba(124,  58, 237, 0.10), transparent 42%),
+    radial-gradient(circle at 85% 15%,   rgba( 79,  70, 229, 0.08), transparent 40%),
+    linear-gradient(145deg, #f5f3ff, #ede9fe);
+}
+
+.nav-link {
+  position: relative;
+  padding-bottom: 4px;
+  text-decoration: none;
+  color: inherit;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0; height: 2px;
+  background: var(--color-accent);
+  transition: width 0.2s ease;
+}
+.nav-link:hover::after { width: 100%; }
+
+.pipeline-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.dropdown-animate { animation: dropdown-in 0.15s ease; }

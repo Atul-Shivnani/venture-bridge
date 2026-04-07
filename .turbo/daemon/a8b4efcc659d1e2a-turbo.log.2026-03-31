@@ -1,0 +1,4 @@
+2026-03-31T11:04:31.544862Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-03-31T11:04:32.831879Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-03-31T11:07:53.874853Z  WARN get_package_file_hashes{include_default_files=true telemetry=None}: turborepo_scm::package_deps: git hashing failed for AnchoredSystemPath("apps\\admin-api") with resource error: Git error on C:\Users\AtulShivnani\Desktop\vc\apps\admin-api\.venv\Lib\site-packages\pip\__init__.py: could not find 'C:\Users\AtulShivnani\Desktop\vc\apps\admin-api\.venv\Lib\site-packages\pip\__init__.py' to open: The system cannot find the path specified.
+; class=Os (2); code=NotFound (-3)

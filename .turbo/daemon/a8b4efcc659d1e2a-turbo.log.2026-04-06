@@ -1,0 +1,4 @@
+2026-04-06T18:04:14.354609Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-04-06T18:04:15.398230Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-04-06T18:04:51.338940Z  WARN get_package_file_hashes{include_default_files=true telemetry=None}: turborepo_scm::package_deps: git hashing failed for AnchoredSystemPath("apps\\admin-api") with resource error: Git error on C:\Users\AtulShivnani\Desktop\vc\apps\admin-api\routers\__pycache__\diligence.cpython-313.pyc.1479018646240: could not find 'C:\Users\AtulShivnani\Desktop\vc\apps\admin-api\routers\__pycache__\diligence.cpython-313.pyc.1479018646240' to open: The system cannot find the file specified.
+; class=Os (2); code=NotFound (-3)

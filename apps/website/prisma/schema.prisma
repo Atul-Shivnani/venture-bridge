@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Portal {
+  startup
+  investor
+  admin
+}
+
+enum Role {
+  user
+  admin
+}
+
+// "idea" added to accommodate the registration form option
+enum FundingStage {
+  idea
+  pre_seed
+  seed
+  series_a
+  series_b
+  growth
+}
+
+// "corporate_vc" and "other" added to match registration form options
+enum InvestorType {
+  vc
+  family_office
+  angel
+  bank
+  corporate_vc
+  other
+}
+
+enum DealStatus {
+  draft
+  under_review
+  approved
+  live
+  closed
+  rejected
+}
+
+enum MatchStatus {
+  pending
+  interested
+  passed
+  in_diligence
+  term_sheet
+  closed
+}
+
+enum DocumentType {
+  pitch_deck
+  financial_model
+  cap_table
+  legal
+  other
+}
+
+enum DocumentStatus {
+  pending
+  approved
+  flagged
+}
+
+enum DiligenceCategory {
+  financial
+  legal
+  governance
+  market
+  team
+}
+
+enum DiligenceStatus {
+  pending
+  in_progress
+  complete
+  flagged
+}
+
+enum FlagType {
+  positive
+  warning
+  critical
+}
+
+enum TermSheetStatus {
+  draft
+  sent
+  countered
+  accepted
+  rejected
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  portal       Portal
+  role         Role     @default(user)
+  approved     Boolean   @default(false)
+  rejectedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  startupProfile  StartupProfile?
+  investorProfile InvestorProfile?
+  assignedDeals   Deal[]          @relation("AnalystDeals")
+  uploadedDocs    Document[]      @relation("Uploader")
+  assignedItems   DiligenceItem[] @relation("AssignedAnalyst")
+  analystNotes    AnalystNote[]
+  notifications   Notification[]
+}
+
+model StartupProfile {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName  String
+  sector       String
+  subSector    String?
+  country      String
+  fundingStage FundingStage
+  foundedYear  Int?
+  teamSize     Int?
+  website      String?
+  description  String?      // short description
+  businessModel     String?
+  customersServed   String?
+  amountRaising     Float?
+  instrumentType    String?
+  useOfFunds        String?
+  arr               Float?   // annual recurring revenue in USD
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  deals     Deal[]
+  documents Document[]
+}
+
+model InvestorProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firmName        String
+  investorType    InvestorType
+  // Raw label from registration form, e.g. "$250k – $2M"
+  ticketSizeLabel String
+  // Parsed numeric bounds
+  ticketMin       Float?
+  ticketMax       Float?
+  // JSON arrays parsed from comma-separated form input
+  geographies          Json         // geography allowed
+  sectors              Json?        // sector allowed
+  stagesAllowed        Json?        // stage allowed
+  instrumentTypesAllowed Json?      // instrument type allowed
+  revenueFloor         Float?       // minimum revenue threshold
+  profitabilityPreference String?   // e.g. "profitable", "path to profitability", "pre-revenue ok"
+  esgExclusions        Json?        // ESG exclusion list
+  regulatoryExclusions Json?        // regulatory exclusion list
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  dealMatches    DealMatch[]
+  diligenceItems DiligenceItem[]
+}
+
+model Deal {
+  id           String         @id @default(cuid())
+  startupId    String
+  startup      StartupProfile @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  analystId    String?
+  analyst      User?          @relation("AnalystDeals", fields: [analystId], references: [id])
+  title        String
+  stage        FundingStage
+  targetAmount Float
+  currency     String         @default("USD")
+  status       DealStatus     @default(draft)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  matches   DealMatch[]
+  documents Document[]
+  diligence DiligenceItem[]
+  notes     AnalystNote[]
+}
+
+model DealMatch {
+  id         String          @id @default(cuid())
+  dealId     String
+  deal       Deal            @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  investorId String
+  investor   InvestorProfile @relation(fields: [investorId], references: [id], onDelete: Cascade)
+  matchScore Int             @default(0)
+  status     MatchStatus     @default(pending)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  termSheet TermSheet?
+
+  @@unique([dealId, investorId])
+}
+
+model Document {
+  id           String         @id @default(cuid())
+  startupId    String
+  startup      StartupProfile @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  dealId       String?
+  deal         Deal?          @relation(fields: [dealId], references: [id])
+  uploadedById String
+  uploadedBy   User           @relation("Uploader", fields: [uploadedById], references: [id])
+  type         DocumentType
+  filename     String
+  url          String
+  status       DocumentStatus @default(pending)
+  createdAt    DateTime       @default(now())
+}
+
+model DiligenceItem {
+  id           String            @id @default(cuid())
+  dealId       String
+  deal         Deal              @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  investorId   String?
+  investor     InvestorProfile?  @relation(fields: [investorId], references: [id], onDelete: SetNull)
+  assignedToId String?
+  assignedTo   User?             @relation("AssignedAnalyst", fields: [assignedToId], references: [id])
+  category     DiligenceCategory
+  title        String
+  notes        String?
+  status       DiligenceStatus   @default(pending)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model AnalystNote {
+  id        String   @id @default(cuid())
+  dealId    String
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  content   String
+  flagType  FlagType
+  createdAt DateTime @default(now())
+}
+
+model TermSheet {
+  id             String          @id @default(cuid())
+  dealMatchId    String          @unique
+  dealMatch      DealMatch       @relation(fields: [dealMatchId], references: [id], onDelete: Cascade)
+  proposedAmount Float
+  valuation      Float
+  terms          Json
+  status         TermSheetStatus @default(draft)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  refId     String?
+  createdAt DateTime @default(now())
+}

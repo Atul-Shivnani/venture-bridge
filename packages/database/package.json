@@ -1,0 +1,18 @@
+{
+  "name": "@venturebridge/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "db:generate": "prisma generate --schema=../../apps/website/prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}

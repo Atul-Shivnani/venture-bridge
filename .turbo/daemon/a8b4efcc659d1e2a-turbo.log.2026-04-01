@@ -1,0 +1,6 @@
+2026-04-01T07:11:53.201359Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-04-01T07:11:54.038759Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-04-01T07:50:39.382453Z  WARN get_package_file_hashes{include_default_files=true telemetry=None}: turborepo_scm::package_deps: git hashing failed for AnchoredSystemPath("apps\\investor-portal") with resource error: Git error on C:\Users\AtulShivnani\Desktop\vc\apps\investor-portal\src\app\settings\page.js.tmp.21180.1775029838301: could not find 'C:\Users\AtulShivnani\Desktop\vc\apps\investor-portal\src\app\settings\page.js.tmp.21180.1775029838301' to open: The system cannot find the file specified.
+; class=Os (2); code=NotFound (-3)
+2026-04-01T22:05:41.729607Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-04-01T22:05:42.921655Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running

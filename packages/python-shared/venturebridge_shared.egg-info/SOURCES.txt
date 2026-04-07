@@ -1,0 +1,10 @@
+pyproject.toml
+venturebridge_shared/__init__.py
+venturebridge_shared/auth.py
+venturebridge_shared/database.py
+venturebridge_shared/models.py
+venturebridge_shared.egg-info/PKG-INFO
+venturebridge_shared.egg-info/SOURCES.txt
+venturebridge_shared.egg-info/dependency_links.txt
+venturebridge_shared.egg-info/requires.txt
+venturebridge_shared.egg-info/top_level.txt

@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1c1a18;
+  --color-ink-soft: #3a3531;
+  --color-accent: #e96f3a;
+  --color-accent-2: #2e6b5d;
+  --color-accent-3: #193a5b;
+  --color-card: #ffffff;
+  --color-border: rgba(28, 26, 24, 0.12);
+  --color-bg: #f6f1ea;
+  --color-bg-2: #f1efe7;
+
+  --font-sans: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  --font-display: var(--font-fraunces), "Fraunces", serif;
+
+  --shadow-soft: 0 24px 60px rgba(24, 20, 18, 0.15);
+}
+
+/* Dark mode — CSS variable swap when ThemeToggle sets data-theme="dark" on <html> */
+[data-theme="dark"] {
+  --color-ink: #f0ede9;
+  --color-ink-soft: #b4ada4;
+  --color-accent: #f0824d;
+  --color-accent-2: #6bc4ae;
+  --color-accent-3: #7aa3d6;
+  --color-card: #1a1e22;
+  --color-border: rgba(240, 237, 233, 0.12);
+  --color-bg: #0f1113;
+  --color-bg-2: #14171a;
+}
