@@ -1,0 +1,77 @@
+FROM node:22-alpine AS deps
+
+WORKDIR /repo
+RUN apk add --no-cache libc6-compat openssl
+
+COPY package.json package-lock.json turbo.json ./
+COPY apps/website/package.json apps/website/package.json
+COPY apps/startup-portal/package.json apps/startup-portal/package.json
+COPY apps/investor-portal/package.json apps/investor-portal/package.json
+COPY apps/admin-portal/package.json apps/admin-portal/package.json
+COPY packages/auth/package.json packages/auth/package.json
+COPY packages/database/package.json packages/database/package.json
+COPY packages/types/package.json packages/types/package.json
+COPY packages/ui/package.json packages/ui/package.json
+
+RUN npm ci
+
+FROM node:22-alpine AS builder
+
+ARG APP_NAME
+ARG NEXT_PUBLIC_WEBSITE_URL
+ARG NEXT_PUBLIC_INVESTOR_PORTAL_URL
+ARG NEXT_PUBLIC_STARTUP_PORTAL_URL
+ARG NEXT_PUBLIC_ADMIN_PORTAL_URL
+ARG NEXT_PUBLIC_INVESTOR_API_URL
+ARG NEXT_PUBLIC_STARTUP_API_URL
+ARG NEXT_PUBLIC_ADMIN_API_URL
+
+ENV NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL
+ENV NEXT_PUBLIC_INVESTOR_PORTAL_URL=$NEXT_PUBLIC_INVESTOR_PORTAL_URL
+ENV NEXT_PUBLIC_STARTUP_PORTAL_URL=$NEXT_PUBLIC_STARTUP_PORTAL_URL
+ENV NEXT_PUBLIC_ADMIN_PORTAL_URL=$NEXT_PUBLIC_ADMIN_PORTAL_URL
+ENV NEXT_PUBLIC_INVESTOR_API_URL=$NEXT_PUBLIC_INVESTOR_API_URL
+ENV NEXT_PUBLIC_STARTUP_API_URL=$NEXT_PUBLIC_STARTUP_API_URL
+ENV NEXT_PUBLIC_ADMIN_API_URL=$NEXT_PUBLIC_ADMIN_API_URL
+
+WORKDIR /repo
+RUN apk add --no-cache libc6-compat openssl
+
+COPY --from=deps /repo/node_modules ./node_modules
+COPY . .
+
+RUN if [ "$APP_NAME" = "website" ]; then npm run prisma:generate --workspace=website; fi
+RUN npm run build --workspace=$APP_NAME
+
+FROM node:22-alpine AS runner
+
+ARG APP_NAME
+ARG NEXT_PUBLIC_WEBSITE_URL
+ARG NEXT_PUBLIC_INVESTOR_PORTAL_URL
+ARG NEXT_PUBLIC_STARTUP_PORTAL_URL
+ARG NEXT_PUBLIC_ADMIN_PORTAL_URL
+ARG NEXT_PUBLIC_INVESTOR_API_URL
+ARG NEXT_PUBLIC_STARTUP_API_URL
+ARG NEXT_PUBLIC_ADMIN_API_URL
+
+ENV APP_NAME=$APP_NAME
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL
+ENV NEXT_PUBLIC_INVESTOR_PORTAL_URL=$NEXT_PUBLIC_INVESTOR_PORTAL_URL
+ENV NEXT_PUBLIC_STARTUP_PORTAL_URL=$NEXT_PUBLIC_STARTUP_PORTAL_URL
+ENV NEXT_PUBLIC_ADMIN_PORTAL_URL=$NEXT_PUBLIC_ADMIN_PORTAL_URL
+ENV NEXT_PUBLIC_INVESTOR_API_URL=$NEXT_PUBLIC_INVESTOR_API_URL
+ENV NEXT_PUBLIC_STARTUP_API_URL=$NEXT_PUBLIC_STARTUP_API_URL
+ENV NEXT_PUBLIC_ADMIN_API_URL=$NEXT_PUBLIC_ADMIN_API_URL
+
+WORKDIR /app
+RUN apk add --no-cache libc6-compat openssl
+
+COPY --from=builder /repo/apps/$APP_NAME/.next/standalone ./
+COPY --from=builder /repo/apps/$APP_NAME/.next/static ./apps/$APP_NAME/.next/static
+COPY --from=builder /repo/apps/$APP_NAME/public ./apps/$APP_NAME/public
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "node apps/$APP_NAME/server.js"]

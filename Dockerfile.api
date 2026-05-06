@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+ARG API_DIR
+ENV API_DIR=$API_DIR
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8000
+
+WORKDIR /repo
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY packages/python-shared packages/python-shared
+COPY apps/$API_DIR/requirements.txt apps/$API_DIR/requirements.txt
+
+WORKDIR /repo/apps/$API_DIR
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY apps/$API_DIR .
+
+EXPOSE 8000
+
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

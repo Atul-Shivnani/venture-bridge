@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3000";
 
-export default function SignIn() {
+function SignInContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -36,5 +36,13 @@ export default function SignIn() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense>
+      <SignInContent />
+    </Suspense>
   );
 }

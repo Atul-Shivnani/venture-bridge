@@ -1,0 +1,112 @@
+services:
+  website:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: website
+    env_file:
+      - apps/website/.env
+    environment:
+      PORT: 3000
+      NEXT_PUBLIC_INVESTOR_PORTAL_URL: http://localhost:3001
+      NEXT_PUBLIC_STARTUP_PORTAL_URL: http://localhost:3002
+      NEXT_PUBLIC_ADMIN_PORTAL_URL: http://localhost:3003
+    ports:
+      - "3000:3000"
+
+  investor-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: investor-portal
+    env_file:
+      - apps/investor-portal/.env
+    environment:
+      PORT: 3001
+      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+      INVESTOR_API_URL: http://investor-api:8000
+      NEXT_PUBLIC_INVESTOR_API_URL: http://localhost:8001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - investor-api
+
+  startup-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: startup-portal
+    env_file:
+      - apps/startup-portal/.env
+    environment:
+      PORT: 3002
+      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+      STARTUP_API_URL: http://startup-api:8000
+      NEXT_PUBLIC_STARTUP_API_URL: http://localhost:8002
+    ports:
+      - "3002:3002"
+    depends_on:
+      - startup-api
+
+  admin-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: admin-portal
+    env_file:
+      - apps/admin-portal/.env
+    environment:
+      PORT: 3003
+      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+      ADMIN_API_URL: http://admin-api:8000
+      NEXT_PUBLIC_ADMIN_API_URL: http://localhost:8003
+    ports:
+      - "3003:3003"
+    depends_on:
+      - admin-api
+
+  investor-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      args:
+        API_DIR: investor-api
+    env_file:
+      - apps/investor-api/.env
+    environment:
+      PORT: 8000
+      CORS_ORIGINS: http://localhost:3001
+    ports:
+      - "8001:8000"
+
+  startup-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      args:
+        API_DIR: startup-api
+    env_file:
+      - apps/startup-api/.env
+    environment:
+      PORT: 8000
+      CORS_ORIGINS: http://localhost:3002
+    ports:
+      - "8002:8000"
+
+  admin-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      args:
+        API_DIR: admin-api
+    env_file:
+      - apps/admin-api/.env
+    environment:
+      PORT: 8000
+      CORS_ORIGINS: http://localhost:3003
+    ports:
+      - "8003:8000"
