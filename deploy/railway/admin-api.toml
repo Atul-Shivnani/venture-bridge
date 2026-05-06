@@ -1,0 +1,10 @@
+[build]
+  dockerfilePath = "Dockerfile.api"
+
+  [build.args]
+    API_DIR = "admin-api"
+
+[deploy]
+  healthcheckPath = "/health"
+  restartPolicyType = "ON_FAILURE"
+  restartPolicyMaxRetries = 3
