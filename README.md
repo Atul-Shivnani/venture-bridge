@@ -4,7 +4,7 @@ A VC deal-flow SaaS platform connecting startups, investors, and admins. Built a
 
 ---
 
-## Architecture Overview
+## Architecture Over
 
 ```
 apps/
