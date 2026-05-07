@@ -18,9 +18,8 @@ services:
     dockerfilePath: Dockerfile.api
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: API_DIR
         value: startup-api
       - key: CORS_ORIGINS
@@ -33,9 +32,8 @@ services:
     dockerfilePath: Dockerfile.api
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: API_DIR
         value: investor-api
       - key: CORS_ORIGINS
@@ -48,9 +46,8 @@ services:
     dockerfilePath: Dockerfile.api
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: API_DIR
         value: admin-api
       - key: CORS_ORIGINS
@@ -68,9 +65,8 @@ services:
     dockerfilePath: Dockerfile.next
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: APP_NAME
         value: startup-portal
       - key: PORTAL_NAME
@@ -87,9 +83,8 @@ services:
     dockerfilePath: Dockerfile.next
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: APP_NAME
         value: investor-portal
       - key: PORTAL_NAME
@@ -106,9 +101,8 @@ services:
     dockerfilePath: Dockerfile.next
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: APP_NAME
         value: admin-portal
       - key: PORTAL_NAME
@@ -125,9 +119,8 @@ services:
     dockerfilePath: Dockerfile.next
     dockerContext: .
     plan: free
-    envVarGroups:
-      - vb-secrets
     envVars:
+      - fromGroup: vb-secrets
       - key: APP_NAME
         value: website
       - key: NEXT_PUBLIC_STARTUP_PORTAL_URL
