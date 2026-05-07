@@ -1,0 +1,139 @@
+envVarGroups:
+  - name: vb-secrets
+    envVars:
+      - key: DATABASE_URL
+        sync: false       # set manually in Render dashboard
+      - key: AUTH_SECRET
+        sync: false       # must be the same value across all services
+
+services:
+
+  # ── Python APIs ──────────────────────────────────────────────────────────────
+  # Render passes all envVars as Docker build args too, matching ARG names in
+  # the Dockerfile. API_DIR is the only build-time arg these need.
+
+  - type: web
+    name: vb-startup-api
+    runtime: docker
+    dockerfilePath: Dockerfile.api
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: API_DIR
+        value: startup-api
+      - key: CORS_ORIGINS
+        value: https://vb-startup.onrender.com
+    healthCheckPath: /health
+
+  - type: web
+    name: vb-investor-api
+    runtime: docker
+    dockerfilePath: Dockerfile.api
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: API_DIR
+        value: investor-api
+      - key: CORS_ORIGINS
+        value: https://vb-investor.onrender.com
+    healthCheckPath: /health
+
+  - type: web
+    name: vb-admin-api
+    runtime: docker
+    dockerfilePath: Dockerfile.api
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: API_DIR
+        value: admin-api
+      - key: CORS_ORIGINS
+        value: https://vb-admin.onrender.com
+    healthCheckPath: /health
+
+  # ── Next.js portals ───────────────────────────────────────────────────────────
+  # APP_NAME and NEXT_PUBLIC_* are passed as Docker build args by Render
+  # (env vars matching Dockerfile ARG names are injected automatically).
+  # This means NEXT_PUBLIC_* URLs get baked into the Next.js bundle at build time.
+
+  - type: web
+    name: vb-startup
+    runtime: docker
+    dockerfilePath: Dockerfile.next
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: APP_NAME
+        value: startup-portal
+      - key: PORTAL_NAME
+        value: startup
+      - key: STARTUP_API_URL
+        value: https://vb-startup-api.onrender.com
+      - key: NEXT_PUBLIC_WEBSITE_URL
+        value: https://vb-website.onrender.com
+    healthCheckPath: /
+
+  - type: web
+    name: vb-investor
+    runtime: docker
+    dockerfilePath: Dockerfile.next
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: APP_NAME
+        value: investor-portal
+      - key: PORTAL_NAME
+        value: investor
+      - key: INVESTOR_API_URL
+        value: https://vb-investor-api.onrender.com
+      - key: NEXT_PUBLIC_WEBSITE_URL
+        value: https://vb-website.onrender.com
+    healthCheckPath: /
+
+  - type: web
+    name: vb-admin
+    runtime: docker
+    dockerfilePath: Dockerfile.next
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: APP_NAME
+        value: admin-portal
+      - key: PORTAL_NAME
+        value: admin
+      - key: ADMIN_API_URL
+        value: https://vb-admin-api.onrender.com
+      - key: NEXT_PUBLIC_WEBSITE_URL
+        value: https://vb-website.onrender.com
+    healthCheckPath: /
+
+  - type: web
+    name: vb-website
+    runtime: docker
+    dockerfilePath: Dockerfile.next
+    dockerContext: .
+    plan: free
+    envVarGroups:
+      - vb-secrets
+    envVars:
+      - key: APP_NAME
+        value: website
+      - key: NEXT_PUBLIC_STARTUP_PORTAL_URL
+        value: https://vb-startup.onrender.com
+      - key: NEXT_PUBLIC_INVESTOR_PORTAL_URL
+        value: https://vb-investor.onrender.com
+      - key: NEXT_PUBLIC_ADMIN_PORTAL_URL
+        value: https://vb-admin.onrender.com
+    healthCheckPath: /
