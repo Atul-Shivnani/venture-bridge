@@ -110,3 +110,34 @@ services:
       CORS_ORIGINS: http://localhost:3003
     ports:
       - "8003:8000"
+
+  analyst-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: analyst-portal
+    env_file:
+      - apps/analyst-portal/.env
+    environment:
+      PORT: 3004
+      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+      ANALYST_API_URL: http://analyst-api:8000
+    ports:
+      - "3004:3004"
+    depends_on:
+      - analyst-api
+
+  analyst-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      args:
+        API_DIR: analyst-api
+    env_file:
+      - apps/analyst-api/.env
+    environment:
+      PORT: 8000
+      CORS_ORIGINS: http://localhost:3004
+    ports:
+      - "8004:8000"

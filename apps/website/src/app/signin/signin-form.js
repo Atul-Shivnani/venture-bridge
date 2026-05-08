@@ -6,8 +6,9 @@ import Link from "next/link";
 const getPortalUrl = (portal) => {
   const map = {
     investor: process.env.NEXT_PUBLIC_INVESTOR_PORTAL_URL,
-    startup: process.env.NEXT_PUBLIC_STARTUP_PORTAL_URL,
-    admin: process.env.NEXT_PUBLIC_ADMIN_PORTAL_URL,
+    startup:  process.env.NEXT_PUBLIC_STARTUP_PORTAL_URL,
+    admin:    process.env.NEXT_PUBLIC_ADMIN_PORTAL_URL,
+    analyst:  process.env.NEXT_PUBLIC_ANALYST_PORTAL_URL,
   };
   return map[portal] || "/";
 };

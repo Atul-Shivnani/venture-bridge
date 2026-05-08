@@ -54,6 +54,22 @@ services:
         value: https://vb-admin.onrender.com
     healthCheckPath: /health
 
+  - type: web
+    name: vb-analyst-api
+    runtime: docker
+    dockerfilePath: Dockerfile.api
+    dockerContext: .
+    plan: free
+    envVars:
+      - fromGroup: vb-secrets
+      - key: API_DIR
+        value: analyst-api
+      - key: CORS_ORIGINS
+        value: https://vb-analyst.onrender.com
+      - key: ANTHROPIC_API_KEY
+        sync: false       # set manually in Render dashboard
+    healthCheckPath: /health
+
   # ── Next.js portals ───────────────────────────────────────────────────────────
   # APP_NAME and NEXT_PUBLIC_* are passed as Docker build args by Render
   # (env vars matching Dockerfile ARG names are injected automatically).
@@ -114,6 +130,24 @@ services:
     healthCheckPath: /
 
   - type: web
+    name: vb-analyst
+    runtime: docker
+    dockerfilePath: Dockerfile.next
+    dockerContext: .
+    plan: free
+    envVars:
+      - fromGroup: vb-secrets
+      - key: APP_NAME
+        value: analyst-portal
+      - key: PORTAL_NAME
+        value: analyst
+      - key: ANALYST_API_URL
+        value: https://vb-analyst-api.onrender.com
+      - key: NEXT_PUBLIC_WEBSITE_URL
+        value: https://vb-website.onrender.com
+    healthCheckPath: /
+
+  - type: web
     name: vb-website
     runtime: docker
     dockerfilePath: Dockerfile.next
@@ -129,4 +163,6 @@ services:
         value: https://vb-investor.onrender.com
       - key: NEXT_PUBLIC_ADMIN_PORTAL_URL
         value: https://vb-admin.onrender.com
+      - key: NEXT_PUBLIC_ANALYST_PORTAL_URL
+        value: https://vb-analyst.onrender.com
     healthCheckPath: /

@@ -189,6 +189,43 @@ class AnalystNote(Base):
     author = relationship("User", foreign_keys=[authorId])
 
 
+class FinancialAnalysis(Base):
+    __tablename__ = qn("FinancialAnalysis")
+
+    id             = Column(qn("id"),             String, primary_key=True)
+    dealId         = Column(qn("dealId"),         String, ForeignKey(quoted_name("Deal.id", True)), unique=True)
+    analystId      = Column(qn("analystId"),      String, ForeignKey(quoted_name("User.id", True)))
+    rawInput       = Column(qn("rawInput"),       Text)
+
+    revenue           = Column(qn("revenue"),          Float,  nullable=True)
+    revenueGrowthPct  = Column(qn("revenueGrowthPct"), Float,  nullable=True)
+    grossProfit       = Column(qn("grossProfit"),      Float,  nullable=True)
+    grossMargin       = Column(qn("grossMargin"),      Float,  nullable=True)
+    operatingProfit   = Column(qn("operatingProfit"),  Float,  nullable=True)
+    netProfit         = Column(qn("netProfit"),        Float,  nullable=True)
+    netMargin         = Column(qn("netMargin"),        Float,  nullable=True)
+    ebitda            = Column(qn("ebitda"),           Float,  nullable=True)
+    ebitdaMargin      = Column(qn("ebitdaMargin"),     Float,  nullable=True)
+    cashOnHand        = Column(qn("cashOnHand"),       Float,  nullable=True)
+    totalDebt         = Column(qn("totalDebt"),        Float,  nullable=True)
+    totalEquity       = Column(qn("totalEquity"),      Float,  nullable=True)
+    debtToEquity      = Column(qn("debtToEquity"),     Float,  nullable=True)
+    workingCapital    = Column(qn("workingCapital"),   Float,  nullable=True)
+    quickRatio        = Column(qn("quickRatio"),       Float,  nullable=True)
+    currentRatio      = Column(qn("currentRatio"),     Float,  nullable=True)
+    operatingCashFlow = Column(qn("operatingCashFlow"),Float,  nullable=True)
+    burnRate          = Column(qn("burnRate"),         Float,  nullable=True)
+    runwayMonths      = Column(qn("runwayMonths"),     Float,  nullable=True)
+    aiModel           = Column(qn("aiModel"),          String)
+    confidence        = Column(qn("confidence"),       String)
+    aiNotes           = Column(qn("aiNotes"),          Text,   nullable=True)
+    createdAt         = Column(qn("createdAt"),        DateTime)
+    updatedAt         = Column(qn("updatedAt"),        DateTime)
+
+    deal    = relationship("Deal", foreign_keys=[dealId])
+    analyst = relationship("User", foreign_keys=[analystId])
+
+
 class TermSheet(Base):
     __tablename__ = qn("TermSheet")
 

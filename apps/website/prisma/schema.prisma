@@ -13,6 +13,7 @@ enum Portal {
   startup
   investor
   admin
+  analyst
 }
 
 enum Role {
@@ -116,11 +117,12 @@ model User {
 
   startupProfile  StartupProfile?
   investorProfile InvestorProfile?
-  assignedDeals   Deal[]          @relation("AnalystDeals")
-  uploadedDocs    Document[]      @relation("Uploader")
-  assignedItems   DiligenceItem[] @relation("AssignedAnalyst")
-  analystNotes    AnalystNote[]
-  notifications   Notification[]
+  assignedDeals      Deal[]               @relation("AnalystDeals")
+  uploadedDocs       Document[]           @relation("Uploader")
+  assignedItems      DiligenceItem[]      @relation("AssignedAnalyst")
+  analystNotes       AnalystNote[]
+  financialAnalyses  FinancialAnalysis[]  @relation("AnalystAnalyses")
+  notifications      Notification[]
 }
 
 model StartupProfile {
@@ -191,10 +193,11 @@ model Deal {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
-  matches   DealMatch[]
-  documents Document[]
-  diligence DiligenceItem[]
-  notes     AnalystNote[]
+  matches           DealMatch[]
+  documents         Document[]
+  diligence         DiligenceItem[]
+  notes             AnalystNote[]
+  financialAnalysis FinancialAnalysis?
 }
 
 model DealMatch {
@@ -265,6 +268,49 @@ model TermSheet {
   status         TermSheetStatus @default(draft)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+}
+
+model FinancialAnalysis {
+  id             String   @id @default(cuid())
+  dealId         String   @unique
+  deal           Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  analystId      String
+  analyst        User     @relation("AnalystAnalyses", fields: [analystId], references: [id])
+
+  rawInput       String   @db.Text
+
+  // Income statement
+  revenue           Float?
+  revenueGrowthPct  Float?
+  grossProfit       Float?
+  grossMargin       Float?
+  operatingProfit   Float?
+  netProfit         Float?
+  netMargin         Float?
+  ebitda            Float?
+  ebitdaMargin      Float?
+
+  // Balance sheet
+  cashOnHand     Float?
+  totalDebt      Float?
+  totalEquity    Float?
+  debtToEquity   Float?
+  workingCapital Float?
+  quickRatio     Float?
+  currentRatio   Float?
+
+  // Cash flow
+  operatingCashFlow Float?
+  burnRate          Float?
+  runwayMonths      Float?
+
+  // AI metadata
+  aiModel     String
+  confidence  String
+  aiNotes     String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Notification {
